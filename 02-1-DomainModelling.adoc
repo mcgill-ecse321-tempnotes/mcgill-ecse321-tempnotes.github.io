@@ -78,6 +78,8 @@ association {
 }
 ----
 
+The addition of the overarching RegistrationManager is only necessary if there will be more than one instance of our application. This is not the case for this course so it is not necessary.
+
 Finally, we generate Java code by clicking the *Generate Java* button. Although the Umple generated Java code can be used, but is too verbose and not JPA compliant. You can see this by comparing the generated Java code to the code found in link:https://github.com/McGill-ECSE321-Fall2020/ecse321-tutorial-notes/raw/master/resources/Model%20Classes.zip[Model Classes.zip].
 
 === JPA Annotations
