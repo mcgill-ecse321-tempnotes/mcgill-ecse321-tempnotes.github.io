@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.8.dev">
-<title>The Domain Model</title>
+<title>ECSE 321 Introduction to Software Engineering: Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,12 +436,323 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
+<h1>ECSE 321 Introduction to Software Engineering: Tutorial</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#trueproject-management-github-and-gradle-pimer">1. Project Management - GitHub and Gradle Pimer</a>
+<ul class="sectlevel2">
+<li><a href="#truegradle-a-build-framework-and-brief-example">1.1. Gradle: A Build Framework and Brief Example</a></li>
+<li><a href="#truegithub-project-repository">1.2. GitHub Project Repository</a></li>
+</ul>
+</li>
+<li><a href="#truebackend">2. Backend</a>
+<ul class="sectlevel2">
+<li><a href="#truethe-domain-model">2.1. The Domain Model</a></li>
+<li><a href="#truejpa-annotations">2.2. JPA Annotations</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sections of the tutorial will continuously be published at this web page.</p>
+</div>
+<div class="paragraph">
+<p>This tutorial serves to give you the practical knowledge required to execute the group project in true AGILE fashion.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueproject-management-github-and-gradle-pimer"><a class="anchor" href="#trueproject-management-github-and-gradle-pimer"></a>1. Project Management - GitHub and Gradle Pimer</h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="truethe-domain-model"><a class="anchor" href="#truethe-domain-model"></a>The Domain Model</h3>
+<h3 id="truegradle-a-build-framework-and-brief-example"><a class="anchor" href="#truegradle-a-build-framework-and-brief-example"></a>1.1. Gradle: A Build Framework and Brief Example</h3>
+<div class="paragraph">
+<p>This section focuses on writing a Gradle (<a href="https://gradle.org/" class="bare">https://gradle.org/</a>) build script that builds a single Gradle project referred to as <em>Computation</em>. The source code and tests for a Java application is available here: <a href="https://github.com/McGill-ECSE321-Fall2020/ecse321-tutorial-notes/raw/master/resources/Computation.zip">Computation.zip</a>. It is your job to create/reorganize the folder called <em>Computation</em>, move sources and tests into that folder, and produce the Gradle build script <em>build.gradle</em> within this folder to automate the software build and testing process for this example project.</p>
+</div>
+<div class="paragraph">
+<p>First, open a terminal, and ensure you have the newest version  of Gradle (ver. 7.0+) installed with <code>gradle --version</code>.</p>
+</div>
+<div class="paragraph">
+<p>Follow the steps below and add the snippets listed here to <code>build.gradle</code>, one after the other:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the following folder structure and a new <em>build.gradle</em> (empty) file within the <em>Computation</em> folder:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="none" class="language-none hljs">Computation
+├── build.gradle
+└── src
+    ├── main
+    │   └── java
+    │       ├── application
+    │       │   └── CompApp.java
+    │       ├── computation
+    │       │   └── Computation.java
+    │       └── view
+    │           └── ComputationPage.java
+    └── test
+        └── java
+            └── computation
+                ├── AllTests.java
+                ├── ComputationTestAddSubstract.java
+                └── ComputationTestDivideMultiply.java</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For Gradle to build your projects correctly, this is the expected file structure. The <code>src</code> folder is divided up into two subdirectories: <code>\main</code> (all application code goes here) and <code>\test</code> (all tests go here). There <strong>MUST</strong> be a <code>java</code> subfolder within both these subdirectories containing all code. If you do not follow this folder structure, you will need to define <code>SourceSets</code>. More on this later.</p>
+</div>
+</li>
+<li>
+<p>Add the <code>java</code> and the <code>application</code> plugins to the build configuration script <em>build.gradle</em>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">apply plugin: 'java'
+// This plugin has a predefined 'run' task that we can reuse to use Gradle to execute our application
+apply plugin: 'application'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A plugin is simply a set of useful tasks that bundled up that extend our project&#8217;s capabilities. There are two types of plugins:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Script
+</td>
+<td class="hdlist2">
+<p>additional build script that is declarative in manipulating the build.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Binary
+</td>
+<td class="hdlist2">
+<p>Classes that implement the plugin interface and programmatic in manipulating the build.</p>
+<div class="paragraph">
+<p>More information on plugins can be found <a href="https://docs.gradle.org/current/userguide/plugins.html">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Add JUnit libraries to the <code>dependencies</code> section.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">repositories {
+    mavenCentral()
+}
+dependencies {
+    testImplementation "junit:junit:4.12"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dependencies are external bundles of code that our project relies on to compile, and/or test our source code. Gradle looks for dependencies in repositories. There is no default repository for Gradle so we have to specify one or several.</p>
+</div>
+</li>
+<li>
+<p>Add and describe a new task <code>compile(type: JavaCompile)</code> to specify all source files (both application and test) and set the <em>build/bin</em> as destination dir to put all compiled class files in.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">task compile(type: JavaCompile) {
+  classpath = sourceSets.main.compileClasspath
+  classpath += sourceSets.test.runtimeClasspath
+  sourceSets.test.java.outputDir = file('build/bin')
+  sourceSets.main.java.outputDir = file('build/bin')
+}
+
+task stage () {
+    dependsOn ':Computation:assemble'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Tasks are blocks of work gradle must perform while building our project. Tasks can essentially do anything.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+One can specify source sets and their variables the following way:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">/*
+ * specifying sourceSets is not necessary in this case, since
+ * we are applying the default folder structure assumed by Gradle
+ */
+sourceSets {
+  main {
+    java { srcDir 'src/main/java' }
+  }
+  test {
+    java { srcDir 'src/test/java'}
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Although this isn&#8217;t necessary, as we follow the default folder structure assumed by Gradle, it is still good practice to do this in case our folder structure changes.</p>
+</div>
+</li>
+<li>
+<p>Specify the main class and run the application.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">mainClassName='application.CompApp'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the command line issue <code>gradle run</code></p>
+</div>
+</li>
+<li>
+<p>Describe the <code>jar</code> Gradle task (defined by the <code>java</code> plugin) to produce an executable jar file into <code>distributable/</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">jar {
+  destinationDir=file('distributable')
+  manifest {
+    // It is smart to reuse the name of the main class variable instead of hardcoding it
+    attributes "Main-Class": "$mainClassName"
+  }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create the <code>settings.gradle</code> file and add the following line:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="gradle" class="language-gradle hljs">include ':Computation'</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truegithub-project-repository"><a class="anchor" href="#truegithub-project-repository"></a>1.2. GitHub Project Repository</h3>
+<div class="paragraph">
+<p>One of the core components of Agile development is being able to manage the development problem space. GitHub projects extends GitHub&#8217;s utility to make problem space management easy.</p>
+</div>
+<div class="paragraph">
+<p>To create a project, click your user icon and select <em>Your projects</em> from the dropdown menu.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj4.png" alt="GitProj4">
+</div>
+</div>
+<div class="paragraph">
+<p>Select the <em>New Project</em> button to create a project. When selecting the template, select <em>Board</em> under the <strong>Start from scratch</strong> section of the pop-up menu and click <em>Create</em>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj5.png" alt="GitProj5">
+</div>
+</div>
+<div class="paragraph">
+<p>Name your project by selecting the default titular text and replacing it with your own porject&#8217;s name. This layout is known as KanBan. By default there are three columns: <strong>To do</strong>, <strong>In progress</strong> and <strong>Done</strong>. More columns can be added by clicking the <strong>+</strong> button at the far right.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj6.png" alt="GitProj6">
+</div>
+</div>
+<div class="paragraph">
+<p>Any repository can be added to a project by navigating to the <em>Projects</em> tab of the repository, selecting the <em>Add project</em> button and choosing the desired project from the dropdown menu. Project KanBan boards can be viewed by clicking the <em>Projects</em> tab of the repository and selecting the appropriate Project.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj7.PNG" alt="GitHub project cards">
+</div>
+</div>
+<div class="paragraph">
+<p>To help with better management of the project as you move through project phases, it is prudent to add Milestones. A new milestone can be created by selecting the <em>Issues</em> tab in the repository, and selecting the <em>Milestones</em> tab located next to the <em>New issue</em> button.</p>
+</div>
+<div class="paragraph">
+<p>To create a new milestone, select the <em>New Milestone</em> button. Then, fill out the form with an appropriate name, due date and description. Once your milestone has been created, you can attach issues to the milestone and see their progress by selecting the <em>Milestones</em> tab. Name your Milestone appropriately, denote the due date and enter a description.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj11.PNG" alt="GitHub project milestone creation button">
+</div>
+</div>
+<div class="paragraph">
+<p>With Milestones and Projects set up, issues can now be assigned to the appropriate project and Milestones. Their status should be changed so they are automatically triaged under the correct KanBan column that matches. As issues are completed and closed, don&#8217;t forget to change their status. Closing issues will fill the progress bar on Milestones, while assigning the status of Done shifts issues on the KanBan board.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The status of issues can only be changed after they are created.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj8.PNG" alt="GitHub project automation">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj12.PNG" alt="GitHub project milestone tracking">
+</div>
+</div>
+<div class="paragraph">
+<p>When creating a new issue it is imperative to be concise but also as descriptive as possible. All the issues you create should have a title, with a comment to describe the issue in detail.</p>
+</div>
+<div class="paragraph">
+<p>All issues at the time of creation should be assigned to someone. You can always change this later. Label your issues. If none of the default labels fit, new labels can be created to meet your need. This is accomplished by selecting the <em>Labels</em> tab next to the <em>Milestones</em> tab under the <em>Issues</em> section. Then click the <em>New Label</em> button. Finally, assign your issue to the appropriate milestone and project.<br></p>
+</div>
+<div class="paragraph">
+<p>For the purpose of tracking progress through the project, never ever ever delete issues. Issues should be closed and reopened as needed but never deleted. Even if a mistake was made during creation of an issue, issues can be edited by their creator.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj14.PNG" alt="GitHub project issue creation">
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;ve set everything up correctly. Your issue board should match your KanBan board. The KanBan board should be a snapshot of how the project is going. Nothing should be done manually here. All the manual labor of opening, moving and triaging issues should be done on the issue board, with automated results appearing on the KanBan board.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figs/GitProj15.PNG" alt="GitHub project issue creation">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truebackend"><a class="anchor" href="#truebackend"></a>2. Backend</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="truethe-domain-model"><a class="anchor" href="#truethe-domain-model"></a>2.1. The Domain Model</h3>
 <div class="paragraph">
 <p>Our task is to build an event registration application that allows people to register for events using their name. Before we can program anything we need to model the application.</p>
 </div>
@@ -453,7 +764,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="UmpleConfig.png" alt="UmpleConfig">
+<img src="figs/UmpleConfig.png" alt="UmpleConfig">
 </div>
 </div>
 <div class="paragraph">
@@ -467,7 +778,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="NaiveUML1.PNG" alt="NaiveUML1">
+<img src="figs/NaiveUML1.PNG" alt="NaiveUML1">
 </div>
 </div>
 <div class="paragraph">
@@ -491,7 +802,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="BetterUML1.PNG" alt="BetterUML1">
+<img src="figs/BetterUML1.PNG" alt="BetterUML1">
 </div>
 </div>
 <div class="paragraph">
@@ -502,7 +813,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="DomainModel.PNG" alt="DomainModel">
+<img src="figs/DomainModel.PNG" alt="DomainModel">
 </div>
 </div>
 <div class="listingblock">
@@ -556,7 +867,7 @@ association {
 </div>
 </div>
 <div class="sect2">
-<h3 id="truejpa-annotations"><a class="anchor" href="#truejpa-annotations"></a>JPA Annotations</h3>
+<h3 id="truejpa-annotations"><a class="anchor" href="#truejpa-annotations"></a>2.2. JPA Annotations</h3>
 <div class="paragraph">
 <p>Next we will create a gradle project  following the steps given in <strong>Section 1.1</strong>. Your project structure should look like this.</p>
 </div>
@@ -632,9 +943,11 @@ association {
 </div>
 </div>
 </div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-02 11:00:25 -0500
+Last updated 2023-02-02 11:20:53 -0500
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
